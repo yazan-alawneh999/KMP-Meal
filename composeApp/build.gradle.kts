@@ -89,6 +89,13 @@ kotlin {
             implementation(libs.coil.network.ktor3)
             // Use Ktor for image loading on iOS
         }
+        
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(kotlin("test-common"))
+            implementation(kotlin("test-annotations-common"))
+            implementation(libs.kotlinx.coroutines.test)
+        }
 
         dependencies {
             ksp(libs.androidx.room.compiler)

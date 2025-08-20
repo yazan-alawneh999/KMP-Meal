@@ -83,7 +83,6 @@ fun MealsListingScreen(
                     )
                 }
                 state.selectedTab == 1 -> {
-                    println("DEBUG UI: Showing beef tab with ${state.beefMeals.size} meals")
                     MealsList(
                         meals = state.beefMeals,
                         onMealClicked = { mealId -> events(MealsListingEvent.OnMealClicked(mealId)) }
@@ -91,7 +90,6 @@ fun MealsListingScreen(
                 }
                 else -> {
                     // Default case - show seafood
-                    println("DEBUG UI: Default case - showing seafood")
                     MealsList(
                         meals = state.seafoodMeals,
                         onMealClicked = { mealId -> events(MealsListingEvent.OnMealClicked(mealId)) }
@@ -107,9 +105,7 @@ private fun MealsList(
     meals: List<Meal>,
     onMealClicked: (String) -> Unit
 ) {
-    println("DEBUG MealsList: received ${meals.size} meals")
     if (meals.isEmpty()) {
-        println("DEBUG MealsList: showing no meals message")
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -121,7 +117,6 @@ private fun MealsList(
             )
         }
     } else {
-        println("DEBUG MealsList: showing ${meals.size} meals in LazyColumn")
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
@@ -130,7 +125,7 @@ private fun MealsList(
             items(meals) { meal ->
                 MealCard(
                     meal = meal,
-                    onClick = { onMealClicked(meal.idMeal) }
+                    onClick = { onMealClicked(meal.safeIdMeal()) }
                 )
             }
         }
@@ -155,8 +150,8 @@ private fun MealCard(
         ) {
             // Meal Image
             MealImage(
-                url = meal.strMealThumb,
-                contentDescription = stringResource(Res.string.meal_image_for, meal.strMeal),
+                url = meal.safeStrMealThumb(),
+                contentDescription = stringResource(Res.string.meal_image_for, meal.safeStrMeal()),
                 modifier = Modifier
                     .width(120.dp)
                     .height(80.dp)
@@ -169,7 +164,7 @@ private fun MealCard(
             ) {
                 // Meal Name
                 Text(
-                    text = meal.strMeal,
+                    text = meal.safeStrMeal(),
                     style = MaterialTheme.typography.titleMedium
                 )
                 

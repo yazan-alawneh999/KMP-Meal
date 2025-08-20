@@ -5,12 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -26,11 +21,6 @@ abstract class BaseViewModel<
     private val initialState: UiState by lazy { setInitialState() }
     private val _state: MutableState<UiState> = mutableStateOf(initialState)
     val state = _state
-
-//    protected abstract val initialViewState: state
-//    protected var lastViewState: state = initialViewState
-//    private val _viewState = MutableStateFlow(initialViewState)
-//    val viewState = _viewState.asStateFlow()
 
 
     private val _event: MutableSharedFlow<Event> = MutableSharedFlow()

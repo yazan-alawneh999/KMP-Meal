@@ -7,8 +7,8 @@ import com.codingwithyazan.mealapp.domain.core.ProgressBarState
 import com.codingwithyazan.mealapp.domain.core.UIComponent
 import com.codingwithyazan.mealapp.domain.meal.GetMealsByCategoryUseCase
 import com.codingwithyazan.mealapp.domain.meal.Meal
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 class MealsListingViewModel(
     private val getSeafoodMealsUseCase: GetMealsByCategoryUseCase,
@@ -25,17 +25,12 @@ init {
                 loadMeals()
             }
             is MealsListingEvent.OnTabSelected -> {
-                println("DEBUG ViewModel: Tab selected: ${event.tabIndex}")
                 setState { copy(selectedTab = event.tabIndex) }
-                println("DEBUG ViewModel: State updated, selectedTab is now: ${state.value.selectedTab}")
-                println("DEBUG ViewModel: Current state - seafood: ${state.value.seafoodMeals.size}, beef: ${state.value.beefMeals.size}")
-                // Don't reload meals - just switch tabs
             }
             is MealsListingEvent.OnMealClicked -> {
                 setAction { MealsListingAction.Navigation.NavigateToMealDetail(event.mealId) }
             }
             is MealsListingEvent.OnRetry -> {
-                println("DEBUG ViewModel: Retry requested, reloading meals")
                 // Force reload by clearing current data
                 setState { 
                     copy(
@@ -46,7 +41,6 @@ init {
                 loadMeals()
             }
             is MealsListingEvent.OnRefresh -> {
-                println("DEBUG ViewModel: Refresh requested, reloading meals")
                 // Force reload by clearing current data
                 setState { 
                     copy(
@@ -60,89 +54,104 @@ init {
     }
 
     private fun loadMeals() {
-        println("DEBUG ViewModel: loadMeals called - current state: seafood=${state.value.seafoodMeals.size}, beef=${state.value.beefMeals.size}")
-        
         // Only load if we don't have data already
         if (state.value.seafoodMeals.isNotEmpty() && state.value.beefMeals.isNotEmpty()) {
-            println("DEBUG ViewModel: Data already loaded, skipping API calls")
             return
         }
         
-        println("DEBUG ViewModel: Starting to load meals...")
         setState { copy(isLoading = ProgressBarState.FullScreenLoading) }
         
+        // Load seafood meals
+        loadSeafoodMeals()
+        
+        // Load beef meals in separate function
+        loadBeefMeals()
+        
+        // Set loading to idle after a delay to allow both coroutines to complete
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(1000) // Give time for both API calls to complete
+            setState { copy(isLoading = ProgressBarState.Idle) }
+        }
+    }
+    
+    private fun loadSeafoodMeals() {
         viewModelScope.launch {
             try {
-                println("DEBUG ViewModel: Starting parallel API calls...")
-                
-                // Load both meals in parallel using coroutines
-                val seafoodDeferred = async {
-                    getSeafoodMealsUseCase.executeAsFlow(GetMealsByCategoryUseCase.Params("Seafood"))
-                        .collect { result ->
-                            when (result) {
-                                is DataState.Success -> {
-                                    val seafoodMeals = result.data ?: emptyList()
-                                    println("DEBUG: Seafood API successful: ${seafoodMeals.size}")
-                                    setState { copy(seafoodMeals = seafoodMeals) }
-                                }
-                                is DataState.Error -> {
-                                    println("DEBUG: Seafood API error: ${result.message}")
-                                    setError {
-                                        UIComponent.DialogSimple(
-                                            title = "Error Loading Seafood Meals",
-                                            description = result.message ?: "Failed to load seafood meals"
-                                        )
-                                    }
-                                }
-                                is DataState.Loading -> {
-                                    println("DEBUG: Seafood API loading...")
-                                }
-                            }
-                        }
-                }
-                
-                val beefDeferred = async {
-                    getBeefMealsUseCase.executeAsFlow(GetMealsByCategoryUseCase.Params("Beef"))
-                        .collect { result ->
-                            when (result) {
-                                is DataState.Success -> {
-                                    val beefMeals = result.data ?: emptyList()
-                                    println("DEBUG: Beef API successful: ${beefMeals.size}")
-                                    setState { copy(beefMeals = beefMeals) }
-                                }
-                                is DataState.Error -> {
-                                    println("DEBUG: Beef API error: ${result.message}")
-                                    setError {
-                                        UIComponent.DialogSimple(
-                                            title = "Error Loading Beef Meals",
-                                            description = result.message ?: "Failed to load beef meals"
-                                        )
-                                    }
-                                }
-                                is DataState.Loading -> {
-                                    println("DEBUG: Beef API loading...")
+                println("ViewModel: Starting to load seafood meals...")
+                val seafoodResult = getSeafoodMealsUseCase.execute(GetMealsByCategoryUseCase.Params("Seafood"))
+                println("ViewModel: Seafood result type: ${seafoodResult::class.simpleName}")
 
-                                }
-                            }
+                when (seafoodResult) {
+                    is DataState.Success -> {
+                        val seafoodMeals = seafoodResult.data ?: emptyList()
+                        println("ViewModel: Seafood API successful, got ${seafoodMeals.size} meals")
+                        if (seafoodMeals.isNotEmpty()) {
+                            println("ViewModel: First seafood meal: ${seafoodMeals.first().safeStrMeal()}")
                         }
+                        setState { copy(seafoodMeals = seafoodMeals) }
+                        println("ViewModel: State updated, seafood meals count: ${state.value.seafoodMeals.size}")
+                    }
+                    is DataState.Error -> {
+                        setError {
+                            UIComponent.DialogSimple(
+                                title = "Error Loading Seafood Meals",
+                                description = seafoodResult.message ?: "Failed to load seafood meals"
+                            )
+                        }
+                    }
+                    is DataState.Loading -> {
+                        println("ViewModel: Seafood API loading...")
+                    }
                 }
-                
-                println("DEBUG ViewModel: Waiting for both APIs to complete...")
-                // Wait for both to complete
-                seafoodDeferred.await()
-                beefDeferred.await()
-                
-                println("DEBUG ViewModel: Both APIs completed, setting loading to idle")
-                // Set loading to idle after both complete
-                setState { copy(isLoading = ProgressBarState.Idle) }
-                
             } catch (e: Exception) {
-                println("DEBUG ViewModel: Exception in loadMeals: ${e.message}")
-                setState { copy(isLoading = ProgressBarState.Idle) }
+                println("ViewModel: Seafood API exception: ${e.message}")
+                e.printStackTrace()
                 setError {
                     UIComponent.DialogSimple(
-                        title = "Network Error",
-                        description = e.message ?: "Unknown error occurred"
+                        title = "Error Loading Seafood Meals",
+                        description = e.message ?: "Failed to load seafood meals"
+                    )
+                }
+            }
+        }
+    }
+    
+    private fun loadBeefMeals() {
+        viewModelScope.launch {
+            try {
+                println("ViewModel: Starting to load beef meals...")
+                val beefResult = getBeefMealsUseCase.execute(GetMealsByCategoryUseCase.Params("Beef"))
+                println("ViewModel: Beef result type: ${beefResult::class.simpleName}")
+                
+                when (beefResult) {
+                    is DataState.Success -> {
+                        val beefMeals = beefResult.data ?: emptyList()
+                        println("ViewModel: Beef API successful, got ${beefMeals.size} meals")
+                        if (beefMeals.isNotEmpty()) {
+                            println("ViewModel: First beef meal: ${beefMeals.first().safeStrMeal()}")
+                        }
+                        setState { copy(beefMeals = beefMeals) }
+                        println("ViewModel: State updated, beef meals count: ${state.value.beefMeals.size}")
+                    }
+                    is DataState.Error -> {
+                        setError {
+                            UIComponent.DialogSimple(
+                                title = "Error Loading Beef Meals",
+                                description = beefResult.message ?: "Failed to load beef meals"
+                            )
+                        }
+                    }
+                    is DataState.Loading -> {
+                        println("ViewModel: Beef API loading...")
+                    }
+                }
+            } catch (e: Exception) {
+                println("ViewModel: Beef API exception: ${e.message}")
+                e.printStackTrace()
+                setError {
+                    UIComponent.DialogSimple(
+                        title = "Error Loading Beef Meals",
+                        description = e.message ?: "Failed to load beef meals"
                     )
                 }
             }

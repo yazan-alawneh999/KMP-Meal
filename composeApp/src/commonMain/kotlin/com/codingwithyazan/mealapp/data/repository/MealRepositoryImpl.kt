@@ -10,21 +10,46 @@ class MealRepositoryImpl(
 ) : MealRepository {
     
     override suspend fun getMealsByCategory(category: String): List<Meal> {
-        return try {
-            val response = apiService.getMealsByCategory(category)
-            response.meals ?: emptyList()
-        } catch (e: Exception) {
-            emptyList()
+        val response = apiService.getMealsByCategory(category)
+        val rawMeals = response.meals ?: emptyList()
+        
+        // Filter out meals with missing required properties
+        val validMeals = rawMeals.filterNotNull().filter { meal ->
+            val isValid = meal.isValid()
+            
+            if (!isValid) {
+                println("Repository: Filtering out invalid meal - idMeal: '${meal.idMeal}', strMeal: '${meal.strMeal}', strMealThumb: '${meal.strMealThumb}'")
+            }
+            
+            isValid
         }
+
+        // Log the response for debugging
+        println("Repository: API response for $category - raw meals: ${rawMeals.size}, valid meals: ${validMeals.size}")
+        if (validMeals.isNotEmpty()) {
+            println("Repository: First valid meal: ${validMeals.first().strMeal}")
+        } else {
+            println("Repository: WARNING - No valid meals returned for $category")
+            if (rawMeals.isNotEmpty()) {
+                println("Repository: Raw meals had ${rawMeals.size} items but all were invalid")
+            }
+        }
+        
+        return validMeals
     }
     
     override suspend fun getMealById(mealId: String): MealDetail? {
-        return try {
-            val response = apiService.getMealById(mealId)
-            response.meals?.firstOrNull()
-        } catch (e: Exception) {
-            null
+        val response = apiService.getMealById(mealId)
+        val meal = response.meals?.firstOrNull()
+        
+        // Log the response for debugging
+        if (meal != null) {
+            println("Repository: Found meal by ID $mealId: ${meal.strMeal}")
+        } else {
+            println("Repository: WARNING - No meal found for ID $mealId")
         }
+        
+        return meal
     }
 }
 
