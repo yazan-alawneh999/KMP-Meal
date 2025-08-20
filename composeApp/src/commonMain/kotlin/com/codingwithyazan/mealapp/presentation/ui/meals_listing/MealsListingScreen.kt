@@ -153,7 +153,8 @@ private fun MealCard(
                 url = meal.strMealThumb,
                 contentDescription = stringResource(Res.string.meal_image_for, meal.strMeal),
                 modifier = Modifier
-                    .size(80.dp)
+                    .width(120.dp)
+                    .height(80.dp)
                     .padding(end = 16.dp)
             )
             
