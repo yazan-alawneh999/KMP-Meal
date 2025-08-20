@@ -12,11 +12,11 @@ class GetMealsByCategoryUseCase(
     override suspend fun execute(params: Params): DataState<List<Meal>> {
         return try {
             val meals = repository.getMealsByCategory(params.category)
-            if (meals.isNotEmpty()) {
+//            if (meals.isNotEmpty()) {
                 DataState.Success(meals)
-            } else {
-                DataState.Error("No meals found for category: ${params.category}")
-            }
+//            } else {
+//                DataState.Error("No meals found for category: ${params.category}")
+//            }
         } catch (e: Exception) {
             DataState.Error(e.message ?: "Unknown error occurred")
         }

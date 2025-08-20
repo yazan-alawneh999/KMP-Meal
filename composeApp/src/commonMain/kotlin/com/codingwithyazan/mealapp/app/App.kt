@@ -30,6 +30,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 @Preview
 fun App() {
+
+    
     MealAppTheme {
         val navController = rememberNavController()
         MealAppNavigation(navController = navController)
@@ -47,9 +49,7 @@ fun MealAppNavigation(navController: NavHostController) {
             startDestination = AppNavigation.MealsListing,
             modifier = Modifier.fillMaxSize()
         ) {
-                        composable<AppNavigation.MealsListing> {
-
-                
+            composable<AppNavigation.MealsListing> {
                 MealsListingScreen(
                     state = mealsListingViewModel.state.value,
                     events = { event -> mealsListingViewModel.setEvent(event) },
@@ -59,7 +59,6 @@ fun MealAppNavigation(navController: NavHostController) {
             
             composable<AppNavigation.MealDetail> { backStackEntry ->
                 val mealId = backStackEntry.arguments?.getString("mealId") ?: ""
-
                 
                 MealDetailScreen(
                     mealId = mealId,

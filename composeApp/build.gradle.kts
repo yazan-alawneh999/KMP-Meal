@@ -47,6 +47,9 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.bundles.retrofit)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.okhttp)
+            // Use OkHttp for image loading on Android
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -68,16 +71,23 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.core)
 
-            implementation(libs.bundles.coil)
+            implementation(libs.coil.compose.core)
+            // No network dependency in commonMain - let platforms handle it
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.bundles.retrofit)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.okhttp)
+            // Use OkHttp for image loading on Desktop
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.bundles.ktor)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
+            // Use Ktor for image loading on iOS
         }
 
         dependencies {

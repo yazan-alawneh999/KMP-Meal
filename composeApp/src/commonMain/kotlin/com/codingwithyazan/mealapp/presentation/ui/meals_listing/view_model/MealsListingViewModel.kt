@@ -15,16 +15,15 @@ class MealsListingViewModel(
     private val getBeefMealsUseCase: GetMealsByCategoryUseCase
 ) : BaseViewModel<MealsListingEvent, MealsListingState, MealsListingAction>() {
 
-
-    init {
-        loadMeals()
-    }
     override fun setInitialState(): MealsListingState = MealsListingState()
-
-
+init {
+    loadMeals()
+}
     override fun onTriggerEvent(event: MealsListingEvent) {
         when (event) {
-
+            is MealsListingEvent.OnInitialize -> {
+                loadMeals()
+            }
             is MealsListingEvent.OnTabSelected -> {
                 println("DEBUG ViewModel: Tab selected: ${event.tabIndex}")
                 setState { copy(selectedTab = event.tabIndex) }
@@ -60,22 +59,22 @@ class MealsListingViewModel(
         }
     }
 
-    init {
-        println("DEBUG ViewModel: init block called")
-        loadMeals()
-    }
-
     private fun loadMeals() {
+        println("DEBUG ViewModel: loadMeals called - current state: seafood=${state.value.seafoodMeals.size}, beef=${state.value.beefMeals.size}")
+        
         // Only load if we don't have data already
         if (state.value.seafoodMeals.isNotEmpty() && state.value.beefMeals.isNotEmpty()) {
             println("DEBUG ViewModel: Data already loaded, skipping API calls")
             return
         }
         
+        println("DEBUG ViewModel: Starting to load meals...")
         setState { copy(isLoading = ProgressBarState.FullScreenLoading) }
         
         viewModelScope.launch {
             try {
+                println("DEBUG ViewModel: Starting parallel API calls...")
+                
                 // Load both meals in parallel using coroutines
                 val seafoodDeferred = async {
                     getSeafoodMealsUseCase.executeAsFlow(GetMealsByCategoryUseCase.Params("Seafood"))
@@ -96,7 +95,7 @@ class MealsListingViewModel(
                                     }
                                 }
                                 is DataState.Loading -> {
-                                    // Handle loading state if needed
+                                    println("DEBUG: Seafood API loading...")
                                 }
                             }
                         }
@@ -121,16 +120,18 @@ class MealsListingViewModel(
                                     }
                                 }
                                 is DataState.Loading -> {
-                                    // Handle loading state if needed
+                                    println("DEBUG: Beef API loading...")
                                 }
                             }
                         }
                 }
                 
+                println("DEBUG ViewModel: Waiting for both APIs to complete...")
                 // Wait for both to complete
                 seafoodDeferred.await()
                 beefDeferred.await()
                 
+                println("DEBUG ViewModel: Both APIs completed, setting loading to idle")
                 // Set loading to idle after both complete
                 setState { copy(isLoading = ProgressBarState.Idle) }
                 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
+
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import cmp_mealapp.composeapp.generated.resources.Res
 import cmp_mealapp.composeapp.generated.resources.*
 
-import coil3.compose.AsyncImage
 import com.codingwithyazan.mealapp.domain.core.UIComponent
 import com.codingwithyazan.mealapp.domain.meal.Meal
 import com.codingwithyazan.mealapp.presentation.component.DefaultScreenUI
+import com.codingwithyazan.mealapp.presentation.component.MealImage
 import com.codingwithyazan.mealapp.presentation.ui.meals_listing.view_model.*
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.stringResource
@@ -148,40 +149,30 @@ private fun MealCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Meal Image
-            AsyncImage(
-                model = meal.strMealThumb,
+            MealImage(
+                url = meal.strMealThumb,
                 contentDescription = stringResource(Res.string.meal_image_for, meal.strMeal),
                 modifier = Modifier
                     .size(80.dp)
                     .padding(end = 16.dp)
             )
             
-            // Meal Name
-            Text(
-                text = meal.strMeal,
-                style = MaterialTheme.typography.titleMedium,
+            // Meal Details Column
+            Column(
                 modifier = Modifier.weight(1f)
-            )
+            ) {
+                // Meal Name
+                Text(
+                    text = meal.strMeal,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                
+                // Removed debug URL display
+            }
         }
     }
 }
 
 
 
-@Composable
-private fun AsyncImage(
-    model: String,
-    contentDescription: String?,
-    modifier: Modifier = Modifier
-) {
-    // Placeholder for image loading - you'll need to implement proper image loading
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "🍽️",
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}
+

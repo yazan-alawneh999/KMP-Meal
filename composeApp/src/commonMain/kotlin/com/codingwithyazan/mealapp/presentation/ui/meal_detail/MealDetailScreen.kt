@@ -12,12 +12,12 @@ import androidx.compose.ui.unit.dp
 import cmp_mealapp.composeapp.generated.resources.Res
 import cmp_mealapp.composeapp.generated.resources.*
 
-import coil3.compose.AsyncImage
 import com.codingwithyazan.mealapp.domain.core.UIComponent
 import com.codingwithyazan.mealapp.domain.meal.Ingredient
 import kotlinx.coroutines.flow.Flow
 import com.codingwithyazan.mealapp.domain.meal.MealDetail
 import com.codingwithyazan.mealapp.presentation.component.DefaultScreenUI
+import com.codingwithyazan.mealapp.presentation.component.MealImage
 import com.codingwithyazan.mealapp.presentation.ui.meal_detail.view_model.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -69,8 +69,8 @@ private fun MealDetailContent(meal: MealDetail) {
             .padding(16.dp)
     ) {
         // Meal Image
-        AsyncImage(
-            model = meal.strMealThumb,
+        MealImage(
+            url = meal.strMealThumb,
             contentDescription = stringResource(Res.string.image_of, meal.strMeal ?: ""),
             modifier = Modifier
                 .fillMaxWidth()
@@ -166,23 +166,5 @@ private fun ErrorContent(
         Button(onClick = onRetry) {
             Text(stringResource(Res.string.retry))
         }
-    }
-}
-
-@Composable
-private fun AsyncImage(
-    model: String?,
-    contentDescription: String?,
-    modifier: Modifier = Modifier
-) {
-    // Placeholder for image loading - you'll need to implement proper image loading
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "🍽️",
-            style = MaterialTheme.typography.displayMedium
-        )
     }
 }
