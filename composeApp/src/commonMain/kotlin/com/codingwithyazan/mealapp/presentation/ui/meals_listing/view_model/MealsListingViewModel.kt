@@ -121,6 +121,7 @@ init {
                                 }
                                 is DataState.Loading -> {
                                     println("DEBUG: Beef API loading...")
+
                                 }
                             }
                         }

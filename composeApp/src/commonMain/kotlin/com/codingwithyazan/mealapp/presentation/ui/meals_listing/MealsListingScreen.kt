@@ -1,5 +1,6 @@
 package com.codingwithyazan.mealapp.presentation.ui.meals_listing
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,7 +49,11 @@ fun MealsListingScreen(
             // Tab Row
             TabRow(
                 selectedTabIndex = state.selectedTab,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                containerColor = MaterialTheme.colorScheme.background,
+
+
+
             ) {
                 Tab(
                     selected = state.selectedTab == 0,

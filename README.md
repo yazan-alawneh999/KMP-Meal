@@ -28,7 +28,7 @@ A Kotlin Multiplatform (KMP) application built with Jetpack Compose that display
 
 4. **UI/UX**
    - Material 3 design system
-   - Dark and light theme support
+   - Automatic dark and light theme support based on system settings
    - Responsive layouts
    - Loading indicators and error states
    - Accessibility support (content descriptions)
@@ -69,6 +69,25 @@ composeApp/src/
 │   └── composeResources/ # Localized strings and resources
 └── iosMain/              # iOS-specific code
 ```
+
+## Theme System
+
+The app automatically supports both dark and light modes based on the user's system settings:
+
+- **Automatic Detection**: The app automatically detects the system theme (dark/light) and applies the appropriate color scheme
+- **Material 3**: Uses Material 3 design system with comprehensive color schemes for both themes
+- **Platform Support**: 
+  - Android: Automatically detects system theme changes and updates in real-time
+  - Desktop/iOS: Defaults to light theme (can be extended with platform-specific theme detection)
+- **No UI Toggle**: Users don't need to manually switch themes - it follows their system preference
+
+### Theme Implementation
+
+The theme system is implemented using Kotlin Multiplatform's `expect/actual` pattern:
+- `Theme.kt` (common): Defines the theme structure and color schemes
+- `Theme.android.kt`: Android-specific theme detection using system configuration
+- `Theme.desktop.kt`: Desktop theme implementation
+- `Theme.ios.kt`: iOS theme implementation
 
 ## Architecture
 
