@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- Meal App Strings -->
+    <string name="app_name">تطبيق الوجبات</string>
+    <string name="seafood">المأكولات البحرية</string>
+    <string name="beef">لحم البقر</string>
+    <string name="cuisine">المطبخ</string>
+    <string name="instructions">التعليمات</string>
+    <string name="ingredients">المكونات</string>
+    <string name="no_meals_available">لا توجد وجبات متاحة</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="meal_image">صورة الوجبة</string>
+    <string name="meal_image_for">صورة الوجبة لـ %s</string>
+    <string name="image_of">صورة لـ %s</string>
+    <string name="unknown_meal">وجبة غير معروفة</string>
+    <string name="no_meal_details">لا توجد تفاصيل للوجبة</string>
+</resources>

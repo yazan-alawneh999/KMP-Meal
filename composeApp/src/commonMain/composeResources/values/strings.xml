@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- Meal App Strings -->
+    <string name="app_name">Meal App</string>
+    <string name="seafood">Seafood</string>
+    <string name="beef">Beef</string>
+    <string name="cuisine">Cuisine</string>
+    <string name="instructions">Instructions</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="no_meals_available">No meals available</string>
+    <string name="retry">Retry</string>
+    <string name="meal_image">Meal image</string>
+    <string name="meal_image_for">Meal image for %s</string>
+    <string name="image_of">Image of %s</string>
+    <string name="unknown_meal">Unknown Meal</string>
+    <string name="no_meal_details">No meal details available</string>
+</resources>
