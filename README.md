@@ -293,12 +293,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - The Kotlin and Android communities for excellent tooling and libraries
 
 
-![8cca53dc-7dc0-4d2f-adb5-9c23d0425d14](https://github.com/user-attachments/assets/d734fbb4-2a9c-4f04-ab2a-3db258d74b1b)
-![77cdc866-b9c3-4ba5-8a06-5c363e38c146](https://github.com/user-attachments/assets/5b29cada-614b-4135-b27e-13820a1c19ff)
-![2572b798-a8b3-468b-be9e-2ac688df377d](https://github.com/user-attachments/assets/bfcd8229-3493-488b-904d-f10b1243ee5d)
-![05b1c892-63ed-4873-bf59-14ee43a66f1a](https://github.com/user-attachments/assets/df08dfd7-b19f-4dd4-a6ee-e21aba972c65)
-![927a481b-2b6c-47a9-874a-a45c3b49e21f](https://github.com/user-attachments/assets/0ded3faa-9c97-4000-ae06-d55c42a4734c)
-
+<img width="1920" height="1080" alt="5" src="https://github.com/user-attachments/assets/01f6b025-167d-49fe-95cd-e6613b4bc775" />
 
 
 
