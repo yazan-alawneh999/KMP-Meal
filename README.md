@@ -127,7 +127,7 @@ The app automatically supports both dark and light modes based on the user's sys
 - **Platform Support**: 
   - Android: Automatically detects system theme changes and updates in real-time
   - Desktop/iOS: Defaults to light theme (can be extended with platform-specific theme detection)
-- **No UI Toggle**: Users don't need to manually switch themes - it follows their system preference
+
 
 ### Theme Implementation
 
@@ -220,7 +220,7 @@ The project uses the following key dependencies:
 
 - **Compose Multiplatform**: UI framework
 - **Koin**: Dependency injection
-- **Retrofit**: HTTP client
+- **Retrofit&Ktor**: HTTP client
 - **Gson**: JSON serialization
 - **Navigation Compose**: Navigation framework
 
